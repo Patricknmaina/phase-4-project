@@ -1,0 +1,18 @@
+# python virtual environment
+env/
+venv/
+
+# vscode folder
+.vscode
+
+# jupyter checkpoints
+.ipynb_checkpoints
+
+# Zone Identifiers
+*.Identifier
+
+# pychache folder
+__pycache__/
+
+# virtual documents
+.virtual_documents/
