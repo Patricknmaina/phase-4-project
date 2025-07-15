@@ -46,8 +46,8 @@ def test_remove_repeated_characters(processor):
 def test_clean_text(processor):
     text = "@user I'm sooooo happyyyy today!!! #excited http://example.com"
     cleaned = processor.clean_text(text)
-    
-    print(f"\n🧹 TEXT CLEANING TEST:")
+
+    print(f"\nText Cleaning Test:")
     print(f"   Input:   '{text}'")
     print(f"   Output:  '{cleaned}'")
     print(f"   Removed: URLs={'http' not in cleaned}, Mentions={'@' not in cleaned}, Hashtags={'#' not in cleaned}")
@@ -65,7 +65,7 @@ def test_preprocess_text(processor):
     preprocessed = processor.preprocess_text(cleaned)
     tokens = preprocessed.split()
     
-    print(f"\n📝 TEXT PREPROCESSING TEST:")
+    print(f"\nText Preprocessing Test:")
     print(f"   Original:     '{text}'")
     print(f"   Cleaned:      '{cleaned}'")
     print(f"   Preprocessed: '{preprocessed}'")
@@ -84,7 +84,7 @@ def test_fit_transform_shape(test_processor):
     ]
     X_transformed = test_processor.fit_transform(tweets)
     
-    print(f"\n🔧 FIT_TRANSFORM TEST:")
+    print(f"\nFit_Transform Test:")
     print(f"   Input tweets: {len(tweets)}")
     for i, tweet in enumerate(tweets):
         print(f"     {i+1}. '{tweet}'")
@@ -101,8 +101,8 @@ def test_get_feature_names(test_processor):
     tweets = ["Happy coding!", "Sad times."]
     test_processor.fit(tweets)
     feature_names = test_processor.get_feature_names_out()
-    
-    print(f"\n📊 FEATURE NAMES TEST:")
+
+    print(f"\nFeature Names Test:")
     print(f"   Input tweets: {tweets}")
     print(f"   Feature names: {feature_names[:10]}...")  # Show first 10
     print(f"   Total features: {len(feature_names)}")
@@ -115,8 +115,8 @@ def test_get_vocabulary(test_processor):
     tweets = ["Happy coding!", "Sad times."]
     test_processor.fit(tweets)
     vocab = test_processor.get_vocabulary()
-    
-    print(f"\n📚 VOCABULARY TEST:")
+
+    print(f"\nVocabulary Test:")
     print(f"   Input tweets: {tweets}")
     print(f"   Vocabulary size: {len(vocab)}")
     print(f"   Sample vocab items: {dict(list(vocab.items())[:5])}")
@@ -126,39 +126,8 @@ def test_get_vocabulary(test_processor):
     assert isinstance(vocab, dict)
     assert "happy" in vocab or "coding" in vocab
 
-# def test_pipeline_integration(test_processor):
-#     """Test that TweetPreprocessor works in a scikit-learn pipeline"""
-#     tweets = [
-#         "I'm so happy about this!",
-#         "This is the worst day ever.",
-#         "Absolutely loved it!",
-#         "I hate everything."
-#     ]
-#     y = [1, 0, 1, 0]  # Sentiment labels
-
-#     pipeline = Pipeline([
-#         ('preprocessor', test_processor),
-#         ('classifier', LogisticRegression(random_state=42))
-#     ])
-
-#     pipeline.fit(tweets, y)
-#     test_tweet = ["I'm not happy with this at all"]
-#     preds = pipeline.predict(test_tweet)
-    
-#     print(f"\n🔗 PIPELINE INTEGRATION TEST:")
-#     print(f"   Training tweets: {len(tweets)}")
-#     print(f"   Training labels: {y}")
-#     print(f"   Test tweet: {test_tweet[0]}")
-#     print(f"   Prediction: {preds[0]} (0=negative, 1=positive)")
-#     print(f"   Pipeline steps: {[step[0] for step in pipeline.steps]}")
-    
-#     assert preds[0] in [0, 1]
-
 if __name__ == "__main__":
     # Run tests with verbose output when executed directly
-    print("🚀 Running TweetPreprocessor Tests with Visual Output")
-    print("=" * 60)
-    
     processor = TweetPreprocessor()
     test_proc = TweetPreprocessor(
         tfidf_min_df=1,
@@ -176,4 +145,4 @@ if __name__ == "__main__":
     test_get_vocabulary(test_proc)
     # test_pipeline_integration(test_proc)
     
-    print(f"\n🎉 All tests completed successfully!")
+    print(f"\nAll tests completed successfully!")
