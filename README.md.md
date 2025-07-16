@@ -5,6 +5,7 @@ This project uses Natural Language Processing (NLP) techniques to classify tweet
 - Predict whether a tweet expresses a Negative, Neutral, or Positive sentiment.
 Built with libraries such as scikit-learn and NLTK, the project includes a complete machine learning pipeline from data preprocessing to model deployment.
 
+
 ## Data Understanding
 The dataset used is tweet_product_company.csv, which contains real-world tweet data mentioning Apple and Google products. Each entry includes the tweet text, the referenced product (e.g., iPhone, Google), the associated company (Apple or Google), and a sentiment label (positive, negative, or neutral). It supports both binary and multiclass sentiment prediction and offers real-world variability, including emoji usage, slang, and abbreviations.
 We will explore the dataset to understand the kind of information it contains, the different features and their data types, as well as checking for things like missing values or unusual patterns. This will help us get a clear picture of the data before moving on to cleaning, preprocessing and vectorization.
@@ -136,3 +137,8 @@ The extension to three-class classification (positive, negative, neutral) reveal
 3.Feature Engineering: Incorporate emoji analysis and user metadata for an enriched dataset
 
 4.Model Deployment: Deploy the binary saved model using FastAPI, Streamlit, or Gradio for real-time sentiment feedback
+
+
+```python
+
+```
