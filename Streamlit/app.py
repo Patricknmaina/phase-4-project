@@ -245,7 +245,7 @@ def load_model():
         os.makedirs('./model', exist_ok=True)
         
         # Download model from a cloud storage service
-        model_url = "YOUR_MODEL_URL_HERE"  # Upload to Google Drive, Dropbox, etc.
+        model_url = "https://github.com/Patricknmaina/phase-4-project/blob/main/Streamlit/model/multi_nlp_model.pkl"  # Upload to Google Drive, Dropbox, etc.
         urlretrieve(model_url, model_path)
     
     return joblib.load(model_path)
