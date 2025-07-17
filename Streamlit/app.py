@@ -246,7 +246,6 @@ try:
     loaded_model = joblib.load(model_path)
     st.info("Model loaded successfully!")
     st.write(f"Model type: {type(loaded_model)}")
-
 except FileNotFoundError:
     print(f"Model file not found at: {model_path}")
     print(f"Looking for model at: {os.path.abspath(model_path)}")
@@ -260,6 +259,8 @@ emoji_map = {"Positive": "😃", "Negative": "😠", "Neutral": "😐"}
 
 # main app logic
 def main():
+    global loaded_model 
+
     # streamlit UI
     st.set_page_config(page_title="Twitter Sentiment Analyzer", layout="centered")
     st.title("💬 Twitter Sentiment Analyzer")
