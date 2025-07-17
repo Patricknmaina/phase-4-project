@@ -238,18 +238,15 @@ import __main__
 __main__.TweetPreprocessor = TweetPreprocessor
 
 # load the saved model pipeline
-# loaded_model = joblib.load('multi_nlp_model.pkl')
-# with open('multi_nlp_model.sav', 'rb') as file:
-#     loaded_model = pickle.load(file)
-# Get the absolute path to the model file
 current_dir = os.path.dirname(os.path.abspath(__file__))
 model_path = os.path.join(current_dir, 'multi_nlp_model.pkl')
 
 # Load the pre-trained model
 try:
     loaded_model = joblib.load(model_path)
-    print("Model loaded successfully with joblib!")
-    print(f"Model type: {type(loaded_model)}")
+    st.info("Model loaded successfully!")
+    st.write(f"Model type: {type(loaded_model)}")
+
 except FileNotFoundError:
     print(f"Model file not found at: {model_path}")
     print(f"Current directory: {current_dir}")
