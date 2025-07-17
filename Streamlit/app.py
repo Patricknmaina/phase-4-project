@@ -236,29 +236,7 @@ import __main__
 __main__.TweetPreprocessor = TweetPreprocessor
 
 # load the saved model pipeline
-loaded_model = joblib.load('../models/multi_nlp_model.pkl')
-
-# # set the title of the web app
-# st.title("Twitter Sentiment Analysis")
-
-# # create a text input box for users to enter their tweets
-# user_input = st.text_area("Enter your tweet here:")
-
-# # create a button for users to submit their tweets
-# if st.button("Analyze Sentiment"):
-#     if user_input.strip() == "":
-#         st.warning("Please enter a tweet.")
-    
-#     else:
-#         # make predictions using the loaded model
-#         prediction = loaded_model.predict([user_input])
-        
-#         # map the prediction to sentiment labels
-#         sentiment_map = {0: "Negative", 1: "Positive", 2: "Neutral"}
-#         sentiment = sentiment_map.get(prediction[0], "Unknown")
-        
-#         # display the result
-#         st.success(f"The sentiment of your tweet is: {sentiment}")
+loaded_model = joblib.load('model/multi_nlp_model.pkl')
 
 # Class index to label mapping
 label_map = {0: "Negative", 1: "Positive", 2: "Neutral"}
