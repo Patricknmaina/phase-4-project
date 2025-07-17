@@ -246,75 +246,73 @@ with open('multi_nlp_model.sav', 'rb') as file:
 label_map = {0: "Negative", 1: "Positive", 2: "Neutral"}
 emoji_map = {"Positive": "😃", "Negative": "😠", "Neutral": "😐"}
 
-# --- Streamlit UI ---
-st.set_page_config(page_title="Twitter Sentiment Analyzer", layout="centered")
-st.title("💬 Twitter Sentiment Analyzer")
-st.markdown("This module analyzes the sentiment of a tweet as **Positive**, **Negative**, or **Neutral** using a Multi-Class Machine Learning model. It is ideal for tech companies such as Apple and Google, which highly value customer feedback and sentiment")
+# main app logic
+def main():
+    # streamlit UI
+    st.set_page_config(page_title="Twitter Sentiment Analyzer", layout="centered")
+    st.title("💬 Twitter Sentiment Analyzer")
+    st.markdown("This module analyzes the sentiment of a tweet as **Positive**, **Negative**, or **Neutral** using a Multi-Class Machine Learning model. It is ideal for tech companies such as Apple and Google, which highly value customer feedback and sentiment.")
 
-# --- User Input ---
-user_input = st.text_area("📥 Enter your tweet below", height=150, max_chars=280)
+    # user input
+    user_input = st.text_area("📥 Enter your tweet below", height=150, max_chars=280)
 
-# --- Prediction Logic ---
-if st.button("🔍 Analyze Sentiment"):
-    if not user_input.strip():
-        st.warning("Please enter a tweet to analyze.")
-    else:
-        # Predict sentiment
-        prediction = loaded_model.predict([user_input])[0]
-        predicted_label = label_map.get(prediction, "Unknown")
-        emoji = emoji_map.get(predicted_label, "")
+    # prediction logic
+    if st.button("🔍 Analyze Sentiment"):
+        if not user_input.strip():
+            st.warning("Please enter a tweet to analyze.")
+        else:
+            prediction = loaded_model.predict([user_input])[0]
+            predicted_label = label_map.get(prediction, "Unknown")
+            emoji = emoji_map.get(predicted_label, "")
 
-        # Predict probabilities
-        probs = loaded_model.predict_proba([user_input])[0]
-        confidence = np.max(probs)
+            probs = loaded_model.predict_proba([user_input])[0]
+            confidence = np.max(probs)
 
-        # --- Display Results ---
-        st.markdown(f"### 🎯 Predicted Sentiment: **{predicted_label}** {emoji}")
-        st.markdown(f"**Confidence:** {confidence:.2%}")
+            st.markdown(f"### 🎯 Predicted Sentiment: **{predicted_label}** {emoji}")
+            st.markdown(f"**Confidence:** {confidence:.2%}")
 
-        # --- Probability Bar Chart ---
-        proba_df = pd.DataFrame({
-            "Sentiment": [label_map[i] for i in range(len(probs))],
-            "Probability": probs
-        }).sort_values("Probability", ascending=False)
+            # probability bar chart
+            proba_df = pd.DataFrame({
+                "Sentiment": [label_map[i] for i in range(len(probs))],
+                "Probability": probs
+            }).sort_values("Probability", ascending=False)
 
-        st.markdown("#### 📊 Prediction Probabilities")
-        # st.bar_chart(proba_df.set_index("Sentiment"))
+            st.markdown("#### 📊 Prediction Probabilities")
 
-        # Define color map for sentiment
-        color_map = {
-            "Positive": "#2ecc71",  # green
-            "Negative": "#e74c3c",  # red
-            "Neutral": "#f1c40f"    # yellow
-        }
+            color_map = {
+                "Positive": "#2ecc71",
+                "Negative": "#e74c3c",
+                "Neutral": "#f1c40f"
+            }
 
-        # Create Plotly bar chart
-        fig = px.bar(
-            proba_df,
-            x="Sentiment",
-            y="Probability",
-            color="Sentiment",
-            color_discrete_map=color_map,
-            text=proba_df["Probability"].apply(lambda x: f"{x:.2%}"),
-        )
+            fig = px.bar(
+                proba_df,
+                x="Sentiment",
+                y="Probability",
+                color="Sentiment",
+                color_discrete_map=color_map,
+                text=proba_df["Probability"].apply(lambda x: f"{x:.2%}"),
+            )
 
-        fig.update_traces(textposition='outside')
-        fig.update_layout(
-            yaxis=dict(title="Probability", range=[0, 1]),
-            xaxis=dict(title="Sentiment"),
-            showlegend=False,
-            title="Prediction Probabilities by Sentiment",
-            plot_bgcolor="#ffffff",
-        )
+            fig.update_traces(textposition='outside')
+            fig.update_layout(
+                yaxis=dict(title="Probability", range=[0, 1]),
+                xaxis=dict(title="Sentiment"),
+                showlegend=False,
+                title="Prediction Probabilities by Sentiment",
+                plot_bgcolor="#ffffff",
+            )
 
-        # Display it
-        st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True)
+
+            with st.expander("🔎 Show detailed probabilities"):
+                st.dataframe(proba_df.set_index("Sentiment"))
+
+    # footer section
+    st.markdown("---")
+    st.markdown("Built by [Patrick Maina](https://github.com/Patricknmaina) | Powered by Streamlit & Scikit-learn")
 
 
-        # Optional: Detailed Table
-        with st.expander("🔎 Show detailed probabilities"):
-            st.dataframe(proba_df.set_index("Sentiment"))
-
-# --- Footer ---
-st.markdown("---")
-st.markdown("Built by [Patrick Maina](https://github.com/Patricknmaina) | Powered by Streamlit & Scikit-learn")
+# run the app
+if __name__ == "__main__":
+    main()
