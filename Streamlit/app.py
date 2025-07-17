@@ -236,7 +236,7 @@ import __main__
 __main__.TweetPreprocessor = TweetPreprocessor
 
 # load the saved model pipeline
-loaded_model = joblib.load('model/multi_nlp_model.pkl')
+loaded_model = joblib.load('./model/multi_nlp_model.pkl')
 
 # Class index to label mapping
 label_map = {0: "Negative", 1: "Positive", 2: "Neutral"}
