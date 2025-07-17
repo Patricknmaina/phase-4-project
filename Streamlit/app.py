@@ -239,7 +239,7 @@ __main__.TweetPreprocessor = TweetPreprocessor
 
 # load the saved model pipeline
 # current_dir = os.path.dirname(os.path.abspath(__file__))
-model_path = 'multi_nlp_model.pkl'
+model_path = 'Streamlit/multi_nlp_model.pkl'
 
 # Load the pre-trained model
 try:
