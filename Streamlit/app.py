@@ -237,22 +237,7 @@ import __main__
 __main__.TweetPreprocessor = TweetPreprocessor
 
 # load the saved model pipeline
-def load_model():
-    model_path = './model/multi_nlp_model.pkl'
-    
-    if not os.path.exists(model_path):
-        # Create model directory if it doesn't exist
-        os.makedirs('./model', exist_ok=True)
-        
-        # Download model from a cloud storage service
-        model_url = "https://github.com/Patricknmaina/phase-4-project/blob/main/Streamlit/model/multi_nlp_model.pkl"  # Upload to Google Drive, Dropbox, etc.
-        urlretrieve(model_url, model_path)
-    
-    return joblib.load(model_path)
-
-# Use in your app
-loaded_model = load_model()
-# loaded_model = joblib.load('../models/multi_nlp_model.pkl')
+loaded_model = joblib.load('multi_nlp_model.pkl')
 
 # Class index to label mapping
 label_map = {0: "Negative", 1: "Positive", 2: "Neutral"}
