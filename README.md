@@ -1,4 +1,5 @@
 # Twitter Sentiment Analysis (Natural Language Processing)
+
 ## Project Summary
 This project uses Natural Language Processing (NLP) techniques to classify tweets related to Apple and Google. It does this by accomplishing these tasks:
 - Predict whether a tweet refers to an Apple or Google product.
@@ -16,66 +17,76 @@ Apple and Google, two of the world's leading tech companies, heavily depend on p
 The primary client for this NLP project is Apple and Google. By analyzing sentiments from tweets about their products and those of their competitors, these tech giants can gain authentic feedback that traditional methods might miss. This real-time access to customer sentiment will enable them to quickly identify trends, preferences, and potential issues, facilitating proactive engagement and timely adjustments to their strategies.
 
 ## Project Objectives:
-1.To apply text preprocessing and vectorization techniques to prepare the Twitter data for effective model training.
-2.To develop a binary sentiment classifier to distinguish between positive and negative tweets, as a baseline.
+1. To apply text preprocessing and vectorization techniques to prepare the Twitter data for effective model training.
+2. To develop a binary sentiment classifier to distinguish between positive and negative tweets, as a baseline.
 
-3.To extend the model to a multiclass classifier, that includes the neutral class.
+3. To extend the model to a multiclass classifier, that includes the neutral class.
 
-4.To evaluate classifier performance using appropriate metrics such as F1-score, precision and recall, particularly for imbalanced classes.
+4. To evaluate classifier performance using appropriate metrics such as F1-score, precision and recall, particularly for imbalanced classes.
 
-5.To provide actionable data-driven insights and recommendations.
+5. To provide actionable, data-driven insights and recommendations that 
+will guide these tech companies in leveraging sentiment analysis for 
+future product developments. 
 
 ## Exploratory Data Analysis
 We performed a systematic investigation of the dataset to extract insights, evaluate feature distributions, assess the relationship between the feature and target variables, and identify anomalies, outliers or data quality issues. This was helpful in choosing the right modelling techniques.
 We also inclued visualizations showing sentiments and distributions as shown below:
-![image.png](attachment:image.png)
-![image-2.png](attachment:image-2.png)
-![image-3.png](attachment:image-3.png)
+
+### Sentiment Distribution
+![Sentiment_Distribution](README_Images/image-1.png)
+
+### Tweet Length by Sentiment
+![tweet_length_by_sentiment](README_Images/image-2.png)
+
+### Sentence Distribution
+![Sentence_Distribution_Count](README_Images/image-3.png)
 
 ## Data Cleaning And Preprocessing
 We introduced a custom TweetPreprocessor class designed to automate and standardize the text cleaning and feature extraction process for Twitter sentiment analysis. the class performed tasks such as:
-Data Cleaning:
 
--Removal of URLs, user mentions, hashtags, special characters, and repeated characters.
+**Data Cleaning**:
 
--Expansion of common English contractions (e.g., "can't" → "cannot").
+- Removal of URLs, user mentions, hashtags, special characters, and repeated characters.
 
--Normalization of whitespace and punctuation.
+- Expansion of common English contractions (e.g., "can't" → "cannot").
 
-Text Preprocessing:
+- Normalization of whitespace and punctuation.
 
--Conversion to lowercase for consistency.
+**Text Preprocessing**:
 
--Tokenization of text into words.
+- Conversion to lowercase for consistency.
 
--Removal of stopwords and short words.
+- Tokenization of text into words.
 
--Lemmatization to reduce words to their base forms.
+- Removal of stopwords and short words.
 
-Feature Extraction:
+- Lemmatization to reduce words to their base forms.
 
--Supports both TF-IDF and Count Vectorization for transforming cleaned tweets into numerical feature vectors.
+**Feature Extraction**:
 
--Configurable options for n-gram range, vocabulary size, and document frequency thresholds.
+- Supports both TF-IDF and Count Vectorization for transforming cleaned tweets into numerical feature vectors.
 
-Pipeline Integration:
+- Configurable options for n-gram range, vocabulary size, and document frequency thresholds.
 
-The class is compatible with scikit-learn pipelines, enabling seamless integration with machine learning workflows.
+**Pipeline Integration**:
+
+The class is compatible with `scikit-learn` and `imblearn` pipelines, enabling seamless integration with machine learning workflows.
 
 
 ## Modelling
 The initial focus is on binary classification, distinguishing between positive and negative sentiments, with neutral tweets excluded from the training set. The pipelines were defined and the model was trained and evaluated using the key metrics of:
-Accuracy: Measures the proportion of correctly classified tweets.
+- Accuracy: Measures the proportion of correctly classified tweets.
 
-Precision: Indicates the proportion of true positive predictions among all positive predictions.
+- Precision: Indicates the proportion of true positive predictions among all positive predictions.
 
-Recall: Reflects the proportion of actual positive tweets correctly identified.
+- Recall: Reflects the proportion of actual positive tweets correctly identified.
 
-F1-Score: The harmonic mean of precision and recall, providing a balanced measure of model performance
+- F1-Score: The harmonic mean of precision and recall, providing a balanced measure of model performance
  
 From the above metrics, it was evident that the Naive Bayes model's simplicity and probabilistic nature make it well-suited for text-based sentiment analysis.
 
 Detailed Classification Report:
+```
               precision    recall  f1-score   support
 
     Negative       0.77      0.40      0.53       114
@@ -85,8 +96,12 @@ Detailed Classification Report:
    macro avg       0.83      0.69      0.73       708
 weighted avg       0.87      0.88      0.87       708
 
-On multiclass classification, the goal was to classify tweets into one of three sentiment categories: Positive, Negative, or Neutral. We defined the pipelines, trained the model and evaluated it and we found that the Multi-Support Vector Machine model wa the best
+```
+
+On multi-class classification, the goal was to classify tweets into one of three sentiment categories: `Positive`, `Negative`, or `Neutral`. We defined the pipelines, trained the model and evaluated it and we found that the Multi-Support Vector Machine (SVM) model had the highest performance.
+
 Detailed Classification Report:
+```
               precision    recall  f1-score   support
 
     Negative       0.31      0.25      0.28       114
@@ -97,6 +112,8 @@ Detailed Classification Report:
    macro avg       0.54      0.51      0.52      1814
 weighted avg       0.65      0.66      0.65      1814
 
+```
+
 ## Model Interpretability
 LIME (Local Interpretable Model-Agnostic Explanations) was used to explain individual predictions. It basically attempts to understand the model by perusing through the input of data samples, and understanding how the predictions change.
 
@@ -104,35 +121,35 @@ LIME (Local Interpretable Model-Agnostic Explanations) was used to explain indiv
 Binary Classification Performance
 The binary classification models (positive vs. negative) achieved strong performance:
 
--Best Model: Naive Bayes with 87.6% accuracy and 87.2% F1-score
--Consistent Performance: All models achieved F1-scores above 81%, indicating robust sentiment detection capabilities
--Effective Class Balance: SMOTE oversampling successfully addressed the class imbalance issue.
+- Best Model: Naive Bayes with 87.6% accuracy and 87.2% F1-score
+- Consistent Performance: All models achieved F1-scores above 81%, indicating robust sentiment detection capabilities
+- Effective Class Balance: SMOTE oversampling successfully addressed the class imbalance issue.
 
 Multi-Class Classification Challenges
 The extension to three-class classification (positive, negative, neutral) revealed significant challenges:
 
--Reduced Performance: Best model (SVM) achieved only 65.7% accuracy and 65.1% F1-score
--Class Imbalance Impact: The dominance of neutral tweets (60.98%) created prediction bias
--Poor Negative Detection: Negative sentiment recall dropped to only 25% from the classification report, indicating most negative tweets were misclassified
+- Reduced Performance: Best model (SVM) achieved only 65.7% accuracy and 65.1% F1-score
+- Class Imbalance Impact: The dominance of neutral tweets (60.98%) created prediction bias
+- Poor Negative Detection: Negative sentiment recall dropped to only 25% from the classification report, indicating most negative tweets were misclassified
 
 ## Recommendations
-1.Deploy Binary Models: Implement Naive Bayes for reliable positive/negative sentiment monitoring
+1. Deploy Binary Models: Implement Naive Bayes for reliable positive/negative sentiment monitoring
 
-2.Continuous Learning: Implement feedback loops to improve model accuracy over time
+2. Continuous Learning: Implement feedback loops to improve model accuracy over time
 
-3.Balanced Sampling: Collect more negative sentiment examples to balance the dataset
+3. Balanced Sampling: Collect more negative sentiment examples to balance the dataset
 
-4.Ensemble Approaches: Combine binary and multi-class models for hybrid predictions
+4. Ensemble Approaches: Combine binary and multi-class models for hybrid predictions
 
-5.Crisis Detection: Use negative sentiment models for early warning systems
+5. Crisis Detection: Use negative sentiment models for early warning systems
 
-6.Product Feedback: Implement sentiment analysis in product review pipelines
+6. Product Feedback: Implement sentiment analysis in product review pipelines
 
 ## Next Steps
-1.Implement Deep Learning Models: Implement a deep learning model with custom Dense layers for sentiment predictions
+1. Implement Deep Learning Models: Implement a deep learning model with custom Dense layers for sentiment predictions
 
-2.Leverage Transfer Learning: Utilize pre-trained sentiment models such as distilBERT or roBERTa for improved performance
+2. Leverage Transfer Learning: Utilize pre-trained sentiment models such as distilBERT or roBERTa for improved performance
 
-3.Feature Engineering: Incorporate emoji analysis and user metadata for an enriched dataset
+3. Feature Engineering: Incorporate emoji analysis and user metadata for an enriched dataset
 
-4.Model Deployment: Deploy the binary saved model using FastAPI, Streamlit, or Gradio for real-time sentiment feedback
+4. Model Deployment: Deploy the binary saved model using FastAPI, Streamlit, or Gradio for real-time sentiment feedback
