@@ -44,10 +44,10 @@ class TweetPreprocessor(BaseEstimator, TransformerMixin):
                  min_length=2,
                  expand_contractions=True,  # New feature
                  remove_repeated_chars=True,  # New feature
-                 tfidf_max_features=15000,
-                 tfidf_ngram_range=(1, 3),
-                 tfidf_min_df=3,
-                 tfidf_max_df=0.85,
+                 tfidf_max_features=5000,
+                 tfidf_ngram_range=(1, 2),
+                 tfidf_min_df=1,  # Changed from 1 to prevent errors
+                 tfidf_max_df=1.0,  # Changed from 0.95 to 1.0 for safer handling
                  use_tfidf=True):
         """
         Initialize the TweetPreprocessor.
@@ -63,19 +63,25 @@ class TweetPreprocessor(BaseEstimator, TransformerMixin):
         remove_stopwords : bool, default=True
             Whether to remove stop words
         lemmatize : bool, default=True
-            Whether to lemmatize words
+            Whether to reduce words to their base form
         lowercase : bool, default=True
             Whether to convert text to lowercase
         min_length : int, default=2
             Minimum word length to keep
-        tfidf_max_features : int, default=10000
+        expand_contractions : bool, default=True
+            Whether to expand contractions (e.g., "can't" -> "cannot")
+        remove_repeated_chars : bool, default=True
+            Whether to reduce repeated characters (e.g., "goooood" -> "good")
+        tfidf_max_features : int, default=15000
             Maximum number of features for TF-IDF
-        tfidf_ngram_range : tuple, default=(1, 2)
+        tfidf_ngram_range : tuple, default=(1, 3)
             N-gram range for TF-IDF
-        tfidf_min_df : int, default=2
-            Minimum document frequency for TF-IDF
-        tfidf_max_df : float, default=0.95
-            Maximum document frequency for TF-IDF
+        tfidf_min_df : int, default=1
+            Minimum document frequency for terms (default 1)
+        tfidf_max_df : float, default=1.0
+            Maximum document frequency cutoff (default 1.0)
+        use_tfidf : bool, default=True
+            Whether to use TF-IDF (True) or Count Vectorizer (False)
         """
         self.remove_urls = remove_urls
         self.remove_mentions = remove_mentions
@@ -106,6 +112,28 @@ class TweetPreprocessor(BaseEstimator, TransformerMixin):
             "there's": "there is", "here's": "here is"
         }
 
+    def _extract_text_from_input(self, X):
+        """
+        Extract text data from various input formats (DataFrame, Series, list, etc.)
+        """
+        if hasattr(X, 'values'):
+            # Handle pandas DataFrame or Series
+            if hasattr(X, 'columns'):
+                # DataFrame - look for 'tweet' column or use first column
+                if 'tweet' in X.columns:
+                    return X['tweet'].values
+                else:
+                    return X.iloc[:, 0].values
+            else:
+                # Series
+                return X.values
+        elif isinstance(X, (list, tuple)):
+            # Handle list or tuple
+            return X
+        else:
+            # Handle numpy array or other array-like
+            return X
+
     def expand_contractions_text(self, text):
         """Expand contractions in text"""
         if not self.expand_contractions:
@@ -114,7 +142,7 @@ class TweetPreprocessor(BaseEstimator, TransformerMixin):
         for contraction, expansion in self.contractions.items():
             text = text.replace(contraction, expansion)
         return text
-    
+
     def remove_repeated_characters(self, text):
         """Remove repeated characters (e.g., 'goooood' -> 'good')"""
         if not self.remove_repeated_chars:
@@ -122,7 +150,7 @@ class TweetPreprocessor(BaseEstimator, TransformerMixin):
         
         # Replace 3+ repeated characters with 2
         return re.sub(r'(.)\1{2,}', r'\1\1', text)
-    
+
     # data cleaning function
     def clean_text(self, text):
         """
@@ -170,7 +198,7 @@ class TweetPreprocessor(BaseEstimator, TransformerMixin):
         text = re.sub(r'\s+', ' ', text).strip()
 
         return text
-    
+
     # text preprocessing function
     def preprocess_text(self, text):
         """
@@ -210,7 +238,7 @@ class TweetPreprocessor(BaseEstimator, TransformerMixin):
             tokens = [self.lemmatizer.lemmatize(token) for token in tokens]
 
         return ' '.join(tokens)
-    
+
     # function to fit the vectorizer
     def fit(self, X, y=None):
         """
@@ -228,31 +256,41 @@ class TweetPreprocessor(BaseEstimator, TransformerMixin):
         self
         """
 
+        # Extract text data from input
+        text_data = self._extract_text_from_input(X)
+
         # clean and preprocess the tweets
         processed_texts = []
-        for text in X:
+        for text in text_data:
             cleaned = self.clean_text(text)
             preprocessed = self.preprocess_text(cleaned)
             processed_texts.append(preprocessed)
+
+        # Automatically adjust parameters for small datasets
+        n_docs = len(processed_texts)
+        min_df = min(self.tfidf_min_df, max(1, n_docs // 100))  # At least 1, at most n_docs/100
+        max_df = min(self.tfidf_max_df, 1.0)  # Ensure max_df is never > 1.0
+        
+        # Ensure min_df doesn't exceed reasonable bounds
+        if min_df >= n_docs * max_df:
+            min_df = 1
+            max_df = 1.0
 
         # fit the TF-IDF vectorizer
         if self.use_tfidf:
             self.vectorizer = TfidfVectorizer(
                 max_features=self.tfidf_max_features,
                 ngram_range=self.tfidf_ngram_range,
-                min_df=self.tfidf_min_df,
-                max_df=self.tfidf_max_df,
-                stop_words='english',
-                sublinear_tf=True,
-                norm='l2',
-                use_idf=True
+                min_df=min_df,
+                max_df=max_df,
+                stop_words='english'
             )
         else:
             self.vectorizer = CountVectorizer(
                 max_features=self.tfidf_max_features,
                 ngram_range=self.tfidf_ngram_range,
-                min_df=self.tfidf_min_df,
-                max_df=self.tfidf_max_df,
+                min_df=min_df,
+                max_df=max_df,
                 stop_words='english'
             )
         self.vectorizer.fit(processed_texts)
@@ -279,9 +317,12 @@ class TweetPreprocessor(BaseEstimator, TransformerMixin):
         if self.vectorizer is None:
             raise ValueError("Preprocessor has not been fitted yet. Call fit() first.")
 
+        # Extract text data from input
+        text_data = self._extract_text_from_input(X)
+
         # process all the tweets
         processed_texts = []
-        for text in X:
+        for text in text_data:
             cleaned = self.clean_text(text)
             preprocessed = self.preprocess_text(cleaned)
             processed_texts.append(preprocessed)

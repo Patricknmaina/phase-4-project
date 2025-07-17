@@ -3,7 +3,7 @@ import re
 import numpy as np
 from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LogisticRegression
-from tweet_preprocessor import TweetPreprocessor
+from unit_tests.tweet_preprocessor import TweetPreprocessor
 
 @pytest.fixture
 def processor():
