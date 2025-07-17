@@ -247,9 +247,9 @@ model_path = os.path.join(current_dir, 'multi_nlp_model.pkl')
 
 # Load the pre-trained model
 try:
-    model = joblib.load(model_path)
+    loaded_model = joblib.load(model_path)
     print("Model loaded successfully with joblib!")
-    print(f"Model type: {type(model)}")
+    print(f"Model type: {type(loaded_model)}")
 except FileNotFoundError:
     print(f"Model file not found at: {model_path}")
     print(f"Current directory: {current_dir}")
