@@ -238,8 +238,8 @@ import __main__
 __main__.TweetPreprocessor = TweetPreprocessor
 
 # load the saved model pipeline
-current_dir = os.path.dirname(os.path.abspath(__file__))
-model_path = os.path.join(current_dir, 'multi_nlp_model.pkl')
+# current_dir = os.path.dirname(os.path.abspath(__file__))
+model_path = 'multi_nlp_model.pkl'
 
 # Load the pre-trained model
 try:
@@ -249,7 +249,6 @@ try:
 
 except FileNotFoundError:
     print(f"Model file not found at: {model_path}")
-    print(f"Current directory: {current_dir}")
     print(f"Looking for model at: {os.path.abspath(model_path)}")
 except Exception as e:
     print(f"Error loading model with joblib: {e}")
