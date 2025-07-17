@@ -33,6 +33,10 @@ try:
     nltk.data.find('corpora/wordnet')
 except LookupError:
     nltk.download('wordnet', quiet=True)
+try:
+    nltk.data.find('tokenizers/punkt_tab')
+except:
+    nltk.download('punkt_tab', quiet=True)
 
 # Define TweetPreprocessor class directly in this file before loading the model
 class TweetPreprocessor(BaseEstimator, TransformerMixin):
