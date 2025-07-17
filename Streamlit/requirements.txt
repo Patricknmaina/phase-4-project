@@ -6,4 +6,4 @@ scikit-learn
 scipy
 streamlit
 nltk
-imblearn
+imbalanced-learn
