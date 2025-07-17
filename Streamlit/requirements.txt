@@ -1,7 +1,6 @@
 joblib
 numpy
 pandas
-pickle
 plotly
 scikit-learn
 scipy
